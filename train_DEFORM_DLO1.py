@@ -167,8 +167,13 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
         '''
         # DEFORM_sim.load_state_dict(torch.load("save_model/DLO1_540.pth"))
 
+
     elif DLO_type == "DLO2":
         n_vert = 12
+        """clamped start and end"""
+        clamped_index = torch.zeros(n_vert)
+        clamped_selection = torch.tensor((0, 1, -2, -1))
+        clamped_index[clamped_selection] = torch.tensor((1.))
         n_edge = n_vert - 1
         device = device
         DEFORM_func = DEFORM_func(n_vert=n_vert, n_edge=n_vert - 1, device=device)
@@ -186,10 +191,21 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
                                    (0.161013, -0.200349, 0.007841),
                                    (0.161086, -0.228518, 0.007807)))).unsqueeze(dim=0).repeat(1, 1, 1).to(device)
         rest_vert = torch.cat((rest_vert[:, :, 0].unsqueeze(dim=-1), rest_vert[:, :, 2].unsqueeze(dim=-1), -rest_vert[:, :, 1].unsqueeze(dim=-1)), dim=-1)
-        DEFORM_sim.m_restEdgeL, DEFORM_sim.m_restRegionL = computeLengths(computeEdges(rest_vert.clone()))
+        vis_rest_vert = torch.Tensor.numpy(rest_vert.to('cpu'))
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        # ax.scatter(X_obs, Y_obs, Z_obs, label='Obstacle', s=4, c='orange')
+        ax.plot(vis_rest_vert[0, :, 0], vis_rest_vert[0, :, 1], vis_rest_vert[0, :, 2], label='pred')
+        ax.set_xlim(-.5, 1.)
+        ax.set_ylim(-1, .5)
+        ax.set_zlim(0, 1.)
+        plt.legend()
+        plt.show()
         DEFORM_sim.rest_vert = nn.Parameter(rest_vert)
-        DEFORM_sim.DEFORM_func.bend_stiffness = nn.Parameter(8e-4 * torch.ones((1, n_edge), device=device))
+        DEFORM_sim.DEFORM_func.bend_stiffness = nn.Parameter(5e-4 * torch.ones((1, n_edge), device=device))
         DEFORM_sim.DEFORM_func.twist_stiffness = nn.Parameter(3e-5 * torch.ones((1, n_edge), device=device))
+        DEFORM_sim.m_restEdgeL, DEFORM_sim.m_restRegionL = computeLengths(computeEdges(rest_vert.clone()))
+
 
     elif DLO_type == "DLO3":
         n_vert = 12
@@ -210,11 +226,82 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
                                    (0.199719, -0.120685, 0.019185),
                                    (0.190919, -0.082036, 0.018718)))).unsqueeze(dim=0).repeat(1, 1, 1).to(device)
 
-        rest_vert = torch.cat((rest_vert[:, :, 0].unsqueeze(dim=-1), rest_vert[:, :, 2].unsqueeze(dim=-1), rest_vert[:, :, 1].unsqueeze(dim=-1)), dim=-1)
+        rest_vert = torch.cat((rest_vert[:, :, 0].unsqueeze(dim=-1), rest_vert[:, :, 2].unsqueeze(dim=-1),
+                               rest_vert[:, :, 1].unsqueeze(dim=-1)), dim=-1)
         DEFORM_sim.m_restEdgeL, DEFORM_sim.m_restRegionL = computeLengths(computeEdges(rest_vert.clone()))
         DEFORM_sim.rest_vert = nn.Parameter(rest_vert)
         DEFORM_sim.DEFORM_func.bend_stiffness = nn.Parameter(8e-4 * torch.ones((1, n_edge), device=device))
         DEFORM_sim.DEFORM_func.twist_stiffness = nn.Parameter(5e-5 * torch.ones((1, n_edge), device=device))
+
+    elif DLO_type == "DLO4":
+        n_vert = 12
+        n_edge = n_vert - 1
+        device = device
+        DEFORM_func = DEFORM_func(n_vert=n_vert, n_edge=n_vert - 1, device=device)
+        DEFORM_sim = DEFORM_sim(n_vert=n_vert, n_edge=n_vert - 1, pbd_iter=10, device=device)
+        rest_vert = (torch.tensor(((0.920048, -0.055981, 0.021565),
+                                   (0.899931, -0.068992, 0.01902),
+                                   (0.800974, -0.091743, 0.014608),
+                                   (0.705552, -0.123076, 0.01362),
+                                   (0.604248, -0.108163, 0.014673),
+                                   (0.506436, -0.115882, 0.014896),
+                                   (0.408701, -0.101447, 0.011098),
+                                   (0.313047, -0.089462, 0.007723),
+                                   (0.231587, -0.10213, 0.007496),
+                                   (0.159452, -0.16659, 0.017735),
+                                   (0.070979, -0.178956, 0.01519),
+                                   (0.062259, -0.202573, 0.013681)))).unsqueeze(dim=0).repeat(1, 1, 1).to(device)
+        rest_vert = torch.cat((rest_vert[:, :, 0].unsqueeze(dim=-1), rest_vert[:, :, 2].unsqueeze(dim=-1), -rest_vert[:, :, 1].unsqueeze(dim=-1)), dim=-1)
+        vis_rest_vert = torch.Tensor.numpy(rest_vert.to('cpu'))
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        # ax.scatter(X_obs, Y_obs, Z_obs, label='Obstacle', s=4, c='orange')
+        ax.plot(vis_rest_vert[0, :, 0], vis_rest_vert[0, :, 1], vis_rest_vert[0, :, 2], label='pred')
+        ax.set_xlim(-.5, 1.)
+        ax.set_ylim(-1, .5)
+        ax.set_zlim(0, 1.)
+        plt.legend()
+        plt.show()
+        DEFORM_sim.m_restEdgeL, DEFORM_sim.m_restRegionL = computeLengths(computeEdges(rest_vert.clone()))
+        DEFORM_sim.rest_vert = nn.Parameter(rest_vert)
+        DEFORM_sim.DEFORM_func.bend_stiffness = nn.Parameter(8e-5 * torch.ones((1, n_edge), device=device))
+        DEFORM_sim.DEFORM_func.twist_stiffness = nn.Parameter(5e-5 * torch.ones((1, n_edge), device=device))
+
+
+    elif DLO_type == "DLO5":
+        n_vert = 12
+        n_edge = n_vert - 1
+        device = device
+        DEFORM_func = DEFORM_func(n_vert=n_vert, n_edge=n_vert - 1, device=device)
+        DEFORM_sim = DEFORM_sim(n_vert=n_vert, n_edge=n_vert - 1, pbd_iter=10, device=device)
+        rest_vert = (torch.tensor(((1.081046, -0.394121, 0.023486),
+                                   (1.056035, -0.384787, 0.023537),
+                                   (0.961936, -0.393094, 0.023699),
+                                   (0.859469, -0.389925, 0.021839),
+                                   (0.76015, -0.379264, 0.022267),
+                                   (0.658647, -0.37746, 0.016315),
+                                   (0.559766, -0.388966, 0.022272),
+                                   (0.457995, -0.40327, 0.021107),
+                                   (0.355937, -0.394938, 0.01998),
+                                   (0.251256, -0.40417, 0.020634),
+                                   (0.160682, -0.424936, 0.021145),
+                                   (0.140942, -0.420546, 0.020377)))).unsqueeze(dim=0).repeat(1, 1, 1).to(device)
+        rest_vert = torch.cat((rest_vert[:, :, 0].unsqueeze(dim=-1), rest_vert[:, :, 2].unsqueeze(dim=-1), -rest_vert[:, :, 1].unsqueeze(dim=-1)), dim=-1)
+        vis_rest_vert = torch.Tensor.numpy(rest_vert.to('cpu'))
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        # ax.scatter(X_obs, Y_obs, Z_obs, label='Obstacle', s=4, c='orange')
+        ax.plot(vis_rest_vert[0, :, 0], vis_rest_vert[0, :, 1], vis_rest_vert[0, :, 2], label='pred')
+        ax.set_xlim(-.5, 1.)
+        ax.set_ylim(-1, .5)
+        ax.set_zlim(0, 1.)
+        plt.legend()
+        plt.show()
+        DEFORM_sim.m_restEdgeL, DEFORM_sim.m_restRegionL = computeLengths(computeEdges(rest_vert.clone()))
+        DEFORM_sim.rest_vert = nn.Parameter(rest_vert)
+        DEFORM_sim.DEFORM_func.bend_stiffness = nn.Parameter(8e-5 * torch.ones((1, n_edge), device=device))
+        DEFORM_sim.DEFORM_func.twist_stiffness = nn.Parameter(5e-5 * torch.ones((1, n_edge), device=device))
+
     else:
         raise ValueError("No matching DLO type")
 
