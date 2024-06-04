@@ -17,7 +17,7 @@ import torch.nn as nn
 
 random.seed(0)
 torch.manual_seed(0)
-
+"test"
 class Train_DeformData(Dataset):
     def __init__(self, DLO_type, train_set_number, time_horizon, device):
         super(Train_DeformData, self).__init__()
