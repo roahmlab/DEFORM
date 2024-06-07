@@ -2,8 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-eval_loss_1 = np.array(pd.read_pickle(r'loss_record/eval_loss_DLO1_2.pkl'))
-eval_step_1 = np.array(pd.read_pickle(r'loss_record/eval_epoch_DLO1_2.pkl'))
+eval_loss_1 = np.array(pd.read_pickle(r'loss_record/eval_loss_DLO1.pkl'))
+eval_step_1 = np.array(pd.read_pickle(r'loss_record/eval_epoch_DLO1.pkl'))
 # eval_loss_1_twisting = np.array(pd.read_pickle(r'loss_record/twisting_eval_loss_DLO1.pkl'))
 # eval_step_1_twisting = np.array(pd.read_pickle(r'loss_record/twisting_eval_epoch_DLO1.pkl')) + 540
 
@@ -20,8 +20,8 @@ eval_step_3 = np.array(pd.read_pickle(r'loss_record/eval_epoch_DLO3.pkl'))
 eval_loss_4 = np.array(pd.read_pickle(r'loss_record/eval_loss_DLO4.pkl'))
 eval_step_4 = np.array(pd.read_pickle(r'loss_record/eval_epoch_DLO4.pkl'))
 #
-# eval_loss_5 = np.array(pd.read_pickle(r'loss_record/eval_loss_DLO5.pkl'))
-# eval_step_5 = np.array(pd.read_pickle(r'loss_record/eval_epoch_DLO5.pkl'))
+eval_loss_5 = np.array(pd.read_pickle(r'loss_record/eval_loss_DLO5.pkl'))
+eval_step_5 = np.array(pd.read_pickle(r'loss_record/eval_epoch_DLO5.pkl'))
 # print(eval_loss_1)
 # print(eval_loss_2)
 # print(eval_loss_3)
@@ -36,8 +36,7 @@ line1 = ax1.plot(eval_step_1, eval_loss_1, label='DLO1')
 line2 = ax2.plot(eval_step_2, eval_loss_2, label='DLO2')
 line3 = ax3.plot(eval_step_3, eval_loss_3, label='DLO3')
 line4 = ax4.plot(eval_step_4, eval_loss_4, label='DLO4')
-# line4 = ax4.plot(eval_step_4, eval_loss_4, label='DLO4')
-# line5 = ax5.plot(eval_step_5, eval_loss_5, label='DLO5')
+line5 = ax5.plot(eval_step_5, eval_loss_5, label='DLO5')
 
 # # # #
 ax1.set_title('Eval: DLO1')
