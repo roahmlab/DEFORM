@@ -352,7 +352,7 @@ class DEFORM_sim(nn.Module):
             return updated_vertices
 
     def forward(self, current_vert, current_v, init_direction, clamped_index, m_u0, input, clamped_selection, theta_full, mode="train"):
-        learning_weight = .5
+        learning_weight = 2.
         if mode == "train":
             previous_vert = current_vert.clone()
             current_x = current_vert.clone()
@@ -401,10 +401,10 @@ class DEFORM_sim(nn.Module):
             """"""
 
             """residual"""
-            # current_vert[:, 2:-2] = current_vert[:, 2:-2] + x_dot * self.dt * learning_weight
-            # current_vert = self.applyInternalConstraintsIteration(current_vert, m_restEdgeL, m_pmass, clamped_index)
             current_vert[:, 2:-2] = current_vert[:, 2:-2] + x_dot * self.dt * learning_weight
-            current_vert = self.non_linear_opt_edge(torch.cat((current_vert[:, 0].unsqueeze(dim=1), current_vert[:, -1].unsqueeze(dim=1)), dim=1), current_vert[:, 1:-1], m_restEdgeL).view(-1, self.n_vert, 3)
+            current_vert = self.applyInternalConstraintsIteration(current_vert, m_restEdgeL, m_pmass, clamped_index)
+            # current_vert[:, 2:-2] = current_vert[:, 2:-2] + x_dot * self.dt * learning_weight
+            # current_vert = self.non_linear_opt_edge(torch.cat((current_vert[:, 0].unsqueeze(dim=1), current_vert[:, -1].unsqueeze(dim=1)), dim=1), current_vert[:, 1:-1], m_restEdgeL).view(-1, self.n_vert, 3)
             current_v = (current_vert - previous_vert) / self.dt
             return current_vert, current_v, theta_full
 
@@ -509,8 +509,9 @@ class DEFORM_sim(nn.Module):
             """"""
 
             """residual"""
-            # current_vert = self.applyInternalConstraintsIteration(current_vert, m_restEdgeL, self.learned_pmass, clamped_index, mode="numpy")
             current_vert[:, 2:-2] = current_vert[:, 2:-2] + x_dot * self.dt * learning_weight
+            current_vert = self.applyInternalConstraintsIteration(current_vert, m_restEdgeL, self.learned_pmass, clamped_index, mode="numpy")
+            # current_vert[:, 2:-2] = current_vert[:, 2:-2] + x_dot * self.dt * learning_weight
             # current_vert = self.non_linear_opt_edge(torch.cat((current_vert[:, 0].unsqueeze(dim=1), current_vert[:, -1].unsqueeze(dim=1)), dim=1), current_vert[:, 1:-1], m_restEdgeL).view(-1, self.n_vert, 3)
             current_v = (current_vert - previous_vert) / self.dt
             return current_vert, current_v, theta_full

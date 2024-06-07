@@ -558,16 +558,13 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
 
 if __name__ == "__main__":
     '''
-    DLO_type: DLO type name, related to training dataset folder, saved model name and loss record. For loss record, try to explore using tensor board
+    DLO_type: DLO type name, related to training dataset folder, saved model name and loss record. For loss record, 
+        try to explore using tensor board
+    DLO_type: DLO1/DLO2/DLO3/DLO4/DLO5
     eval/train set number = number of pickle file
     eval/train time horizon: in this case, FPS = 100 hz. change self.dt in DEFROM_sim but test it stability first 
     batch: training batch. eval batch default = eval set number
-    device: CUDA/CPU switchable
+    device: cuda:0/CPU switchable
     '''
     train(DLO_type="DLO1", train_set_number=56, eval_set_number=14, train_time_horizon=100, eval_time_horizon=500, batch=32, DEFORM_func=DEFORM_func, DEFORM_sim=DEFORM_sim, device="cpu")
-    # training log:
-    # DEFORM_sim.DEFORM_func.bend_stiffness = nn.Parameter(5e-5 * torch.ones((1, n_edge), device=device))
-    # DEFORM_sim.DEFORM_func.twist_stiffness = nn.Parameter(2e-5 * torch.ones((1, n_edge), device=device))
-    # new edge index
-    # learning weight: 0.5
-    # loss:
+
