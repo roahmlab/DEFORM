@@ -252,52 +252,6 @@ class DEFORM_sim(nn.Module):
         vertices = vertices + v_vertices * self.dt * self.integration_ratio
         return vertices, v_vertices * self.dt * self.integration_ratio
 
-    """original inextensiblity of DER" need to be modified"""
-    def non_linear_opt_edge(self, control_vertices, no_control_vertices, m_restEdgeL):
-        batch = control_vertices.size()[0]
-        objective = th.Objective()
-        control_vertices_Variable = th.Variable(control_vertices, name="control_vertices")
-        no_control_vertices_Variable = th.Vector((self.n_vert-2) * 3, name="no_control_vertices")
-        m_restEdgeL_Variable = th.Variable(m_restEdgeL, name="m_restEdgeL")
-        length_target_Variable = th.Variable(torch.zeros((batch, 1), device=self.device), name="E_target")
-
-        cost_function = th.AutoDiffCostFunction(
-            [no_control_vertices_Variable], self.err_function, length_target_Variable.tensor.shape[1],
-            aux_vars=[control_vertices_Variable, m_restEdgeL_Variable]
-        )
-
-        objective.add(cost_function)
-
-        optimizer = th.LevenbergMarquardt(
-            objective,
-            linear_solver_cls=th.CholeskyDenseSolver,
-            linearization_cls=th.DenseLinearization,
-            linear_solver_kwargs={'check_singular': False},
-            vectorize=True,
-            max_iterations=100,
-            step_size=.99,
-            abs_err_tolerance=1e-10,
-            rel_err_tolerance=1e-100,
-            adaptive_damping=True
-        )
-
-        non_linear_opt_layer_init = th.TheseusLayer(optimizer)
-        non_linear_opt_layer_init.to(self.device)
-        solution, info = non_linear_opt_layer_init.forward(
-            input_tensors={"control_vertices": control_vertices.clone(), "m_restEdgeL": m_restEdgeL.clone(), "no_control_vertices": no_control_vertices.view(-1, (self.n_vert-2)*3).clone()},
-        )
-        return torch.concatenate((control_vertices[:, 0], solution["no_control_vertices"], control_vertices[:, -1]), dim=1)
-
-    def err_function(self, optim_vars, aux_vars):
-        control_vertices, m_restEdgeL = aux_vars
-        return (torch.pow((self.non_linear_inextensible(control_vertices.tensor, optim_vars[0].tensor) - m_restEdgeL.tensor), 2).sum(-1)).unsqueeze(dim=-1)
-
-    def non_linear_inextensible(self, control_vertices, no_control_vertices):
-        no_control_vertices = no_control_vertices.view(no_control_vertices.size()[0], self.n_vert-2, 3)
-        vertices = torch.cat((control_vertices[:, 0].unsqueeze(dim=1), no_control_vertices, control_vertices[:, 1].unsqueeze(dim=1)), dim=1)
-        m_restEdgeL = computeLength_only(vertices)
-        return m_restEdgeL
-
     """Inextensibility Enforcement"""
     def applyInternalConstraintsIteration(self, updated_vertices, m_restEdgeL, m_pmass, clamped_index, iterative_times=10, mode="pytorch"):
         """
