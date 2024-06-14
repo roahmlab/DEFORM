@@ -158,7 +158,7 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
         rest_vert = torch.cat((rest_vert[:, :, 0].unsqueeze(dim=-1), rest_vert[:, :, 2].unsqueeze(dim=-1), -rest_vert[:, :, 1].unsqueeze(dim=-1)), dim=-1)
         DEFORM_sim.rest_vert = nn.Parameter(rest_vert)
         '''
-        stiffness of bending and twisting: dependent on wires. typically initialized with heuristic trials/grid search with the smallest eval loss.
+        stiffness of bending and twisting: dependent on wires. 
         '''
         DEFORM_sim.DEFORM_func.bend_stiffness = nn.Parameter(5e-5 * torch.ones((1, n_edge), device=device))
         DEFORM_sim.DEFORM_func.twist_stiffness = nn.Parameter(2e-5 * torch.ones((1, n_edge), device=device))
@@ -336,6 +336,7 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
     eval_epochs = []
     eval_losses = []
 
+    """evaluate the model after each 20 training iterations"""
     train_epoch = 100
     save_steps = 0
     evaluate_period = 20
@@ -375,7 +376,7 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
                                     traj_loss = loss_func(init_pred_vert_0, eval_target_vertices[:, traj_num].float())
                                     eval_loss += traj_loss
 
-                                    """visualization"""
+                                    """visualization: store image into local file for visualization"""
                                     # init_vis_vert = torch.Tensor.numpy(init_pred_vert_0.to('cpu'))
                                     # vis_gt_vert = torch.Tensor.numpy(eval_target_vertices[:, traj_num].to('cpu'))
                                     # fig = plt.figure()
@@ -439,6 +440,7 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
                             eval_time += 1
                 eval_losses.append(eval_loss.cpu().detach().numpy() / (eval_time_horizon * part_eval // eval_batch))
                 eval_epochs.append(update_steps)
+                """save loss into local files. to do: tensor board"""
                 save_pickle(eval_losses, "loss_record/eval_loss_%s.pkl" % (DLO_type))
                 save_pickle(eval_epochs, "loss_record/eval_epoch_%s.pkl" % (DLO_type))
             """"""
