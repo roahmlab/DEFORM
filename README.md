@@ -13,7 +13,7 @@ All authors are affiliated with the Robotics department and the department of Me
 - Run `pip install -r requirements.txt` to collect all python dependencies.
 
 ### Training DEFORM Models
-- Example: Run `python train_DEFORM.py  --DLO_type="DLO1"` to train a DEFORM model for DLO1 
+- Example: run `python train_DEFORM.py  --DLO_type="DLO1"` to train a DEFORM model with the DLO1 dataset.
 
 ## Citation
 If you use DEFORM in an academic work, please cite using the following BibTex entry:
