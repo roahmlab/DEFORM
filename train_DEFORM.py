@@ -355,7 +355,7 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
                 torch.save(DEFORM_sim.state_dict(),os.path.join("save_model/", "%s_%s.pth" % (DLO_type, str(update_steps))))
                 eval_loss = 0
                 eval_bar = tqdm(eval_data_loader)
-                """evaluation"""
+                """evaluation: for faster evaluation, use DEFORM_sim(..., mode = "evaluation_numpy")"""
                 with torch.no_grad():
                     eval_time = 0
                     for eval_data in eval_bar:
