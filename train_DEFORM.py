@@ -1,5 +1,6 @@
 import glob
 import os
+import argparse
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
@@ -568,5 +569,12 @@ if __name__ == "__main__":
     batch: training batch. eval batch default = eval set number
     device: cuda:0/CPU switchable
     '''
-    train(DLO_type="DLO1", train_set_number=56, eval_set_number=14, train_time_horizon=100, eval_time_horizon=500, batch=32, DEFORM_func=DEFORM_func, DEFORM_sim=DEFORM_sim, device="cpu")
+        parser = argparse.ArgumentParser()
+    parser.add_argument("--DLO_type", type=str, default="DLO1")
+    parser.add_argument("--train_set_number", type=int, default=56)
+    parser.add_argument("--eval_set_number", type=int, default=14)
+    parser.add_argument("--train_time_horizon", type=int, default=100)
+    parser.add_argument("--eval_time_horizon", type=int, default=500)
+    args = parser.parse_args()
+    train(DLO_type=args.DLO_type, train_set_number=56, eval_set_number=14, train_time_horizon=100, eval_time_horizon=500, batch=32, DEFORM_func=DEFORM_func, DEFORM_sim=DEFORM_sim, device="cpu")
 
