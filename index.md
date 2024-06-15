@@ -44,7 +44,7 @@ links:
   - icon: arxiv
     icon-library: simpleicons
     text: Arxiv
-    url: https://arxiv.org/abs/2309.03111
+    url: https://arxiv.org/abs/2406.05931
   - icon: github
     icon-library: simpleicons
     text: Code
@@ -107,16 +107,14 @@ c) 1 &rarr; 2: DER enforces inextensibility, but this does not satisfy classical
 This project was developed in [Robotics and Optimization for Analysis of Human Motion (ROAHM) Lab](http://www.roahmlab.com/) at University of Michigan - Ann Arbor.
 
 ```bibtex
-@article{brei2024waiter,
-  author={Brei, Zachary and Michaux, Jonathan and Zhang, Bohao and Holmes, Patrick and Vasudevan, Ram},
-  journal={IEEE Robotics and Automation Letters}, 
-  title={Serving Time: Real-Time, Safe Motion Planning and Control for Manipulation of Unsecured Objects}, 
-  year={2024},
-  volume={9},
-  number={3},
-  pages={2383-2390},
-  keywords={Robots;Trajectory;Manipulators;Real-time systems;Uncertainty;Planning;Optimization;Manipulation planning;robot safety;collision avoidance},
-  doi={10.1109/LRA.2024.3355731}}
+@misc{chen2024differentiable,
+      title={Differentiable Discrete Elastic Rods for Real-Time Modeling of Deformable Linear Objects}, 
+      author={Yizhou Chen and Yiting Zhang and Zachary Brei and Tiancheng Zhang and Yuzhen Chen and Julie Wu and Ram Vasudevan},
+      year={2024},
+      eprint={2406.05931},
+      archivePrefix={arXiv},
+      primaryClass={id='cs.RO' full_name='Robotics' is_active=True alt_name=None in_archive='cs' is_general=False description='Roughly includes material in ACM Subject Class I.2.9.'}
+}
 ```
 </div>
 
