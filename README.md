@@ -12,6 +12,10 @@ All authors are affiliated with the Robotics department and the department of Me
 ## Dependency 
 - Run `pip install -r requirements.txt` to collect all python dependencies.
 
+### Training DEFORM Models
+- Run `python train_DEFORM.py  --DLO_type="DLO1"'
+
+
 ## Citation
 If you use DEFORM in an academic work, please cite using the following BibTex entry:
 ```
