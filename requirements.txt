@@ -1,5 +1,6 @@
 numpy==1.24.3
 open3d==0.17.0
+ConfigArgParse==1.5.3
 opencv-python==4.8.0.74
 pandas==2.0.2
 qpth==0.0.15
