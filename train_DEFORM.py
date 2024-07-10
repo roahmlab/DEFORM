@@ -493,7 +493,13 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
                             current_edges = computeEdges(pred_vertice)
                             m_u0 = DEFORM_func.parallelTransportFrame(previous_edge[:, 0], current_edges[:, 0],m_u0[:, traj_num])
                             target_v = (target_vertices[:, traj_num] - vertices[:, traj_num]).div(DEFORM_sim.dt)
-                            pred_vertice, current_v, theta_full = DEFORM_sim(pred_vertice.clone(), current_v.clone(), init_direction.repeat(batch, 1, 1), clamped_index, m_u0, inputs[:, traj_num],
+                            pred_vertice, current_v, theta_full        parser = argparse.ArgumentParser()
+    parser.add_argument("--DLO_type", type=str, default="DLO1")
+    parser.add_argument("--train_set_number", type=int, default=56)
+    parser.add_argument("--eval_set_number", type=int, default=14)
+    parser.add_argument("--train_time_horizon", type=int, default=100)
+    parser.add_argument("--eval_time_horizon", type=int, default=500)
+    args = parser.parse_args() = DEFORM_sim(pred_vertice.clone(), current_v.clone(), init_direction.repeat(batch, 1, 1), clamped_index, m_u0, inputs[:, traj_num],
                                 clamped_selection, theta_full)
                             traj_loss = loss_func(pred_vertice, target_vertices[:, traj_num])
                             v_loss = loss_func(current_v, target_v)
@@ -569,7 +575,7 @@ if __name__ == "__main__":
     batch: training batch. eval batch default = eval set number
     device: cuda:0/CPU switchable
     '''
-        parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser()
     parser.add_argument("--DLO_type", type=str, default="DLO1")
     parser.add_argument("--train_set_number", type=int, default=56)
     parser.add_argument("--eval_set_number", type=int, default=14)
