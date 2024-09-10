@@ -3,7 +3,6 @@ open3d==0.17.0
 ConfigArgParse==1.5.3
 opencv-python==4.8.0.74
 pandas==2.0.2
-qpth==0.0.15
 tensorboard==2.14.0
 tensorboard-data-server==0.7.2
 theseus-ai==0.2.1
@@ -17,6 +16,8 @@ torchmetrics==1.2.1
 torchvision==0.15.2
 tornado==6.3.2
 tqdm==4.65.0
+matplotlib==3.7.1
+
 
 
 
