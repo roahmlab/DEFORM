@@ -157,6 +157,16 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
                                    (-0.071514, -0.17382, 0.015446),
                                    (-0.094659, -0.186181, 0.012403)))).unsqueeze(dim=0).repeat(1, 1, 1).to(device)
         rest_vert = torch.cat((rest_vert[:, :, 0].unsqueeze(dim=-1), rest_vert[:, :, 2].unsqueeze(dim=-1), -rest_vert[:, :, 1].unsqueeze(dim=-1)), dim=-1)
+        # vis_rest_vert = torch.Tensor.numpy(rest_vert.to('cpu'))
+        # fig = plt.figure()
+        # ax = fig.add_subplot(111, projection='3d')
+        # # ax.scatter(X_obs, Y_obs, Z_obs, label='Obstacle', s=4, c='orange')
+        # ax.plot(vis_rest_vert[0, :, 0], vis_rest_vert[0, :, 1], vis_rest_vert[0, :, 2], label='pred')
+        # ax.set_xlim(-.5, 1.)
+        # ax.set_ylim(-1, .5)
+        # ax.set_zlim(0, 1.)
+        # plt.legend()
+        # plt.show()
         DEFORM_sim.rest_vert = nn.Parameter(rest_vert)
         '''
         stiffness of bending and twisting: dependent on wires. 
@@ -166,7 +176,7 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
         '''
         load trained model. comment following when train first time.
         '''
-        # DEFORM_sim.load_state_dict(torch.load("save_model/DLO1_540.pth"))
+        # DEFORM_sim.load_state_dict(torch.load("save_model/DLO1_0.pth"))
 
 
     elif DLO_type == "DLO2":
@@ -192,16 +202,16 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
                                    (0.161013, -0.200349, 0.007841),
                                    (0.161086, -0.228518, 0.007807)))).unsqueeze(dim=0).repeat(1, 1, 1).to(device)
         rest_vert = torch.cat((rest_vert[:, :, 0].unsqueeze(dim=-1), rest_vert[:, :, 2].unsqueeze(dim=-1), -rest_vert[:, :, 1].unsqueeze(dim=-1)), dim=-1)
-        vis_rest_vert = torch.Tensor.numpy(rest_vert.to('cpu'))
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-        # ax.scatter(X_obs, Y_obs, Z_obs, label='Obstacle', s=4, c='orange')
-        ax.plot(vis_rest_vert[0, :, 0], vis_rest_vert[0, :, 1], vis_rest_vert[0, :, 2], label='pred')
-        ax.set_xlim(-.5, 1.)
-        ax.set_ylim(-1, .5)
-        ax.set_zlim(0, 1.)
-        plt.legend()
-        plt.show()
+        # vis_rest_vert = torch.Tensor.numpy(rest_vert.to('cpu'))
+        # fig = plt.figure()
+        # ax = fig.add_subplot(111, projection='3d')
+        # # ax.scatter(X_obs, Y_obs, Z_obs, label='Obstacle', s=4, c='orange')
+        # ax.plot(vis_rest_vert[0, :, 0], vis_rest_vert[0, :, 1], vis_rest_vert[0, :, 2], label='pred')
+        # ax.set_xlim(-.5, 1.)
+        # ax.set_ylim(-1, .5)
+        # ax.set_zlim(0, 1.)
+        # plt.legend()
+        # plt.show()
         DEFORM_sim.rest_vert = nn.Parameter(rest_vert)
         DEFORM_sim.DEFORM_func.bend_stiffness = nn.Parameter(5e-4 * torch.ones((1, n_edge), device=device))
         DEFORM_sim.DEFORM_func.twist_stiffness = nn.Parameter(3e-5 * torch.ones((1, n_edge), device=device))
@@ -230,6 +240,15 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
         rest_vert = torch.cat((rest_vert[:, :, 0].unsqueeze(dim=-1), rest_vert[:, :, 2].unsqueeze(dim=-1),
                                rest_vert[:, :, 1].unsqueeze(dim=-1)), dim=-1)
         DEFORM_sim.m_restEdgeL, DEFORM_sim.m_restRegionL = computeLengths(computeEdges(rest_vert.clone()))
+        # fig = plt.figure()
+        # ax = fig.add_subplot(111, projection='3d')
+        # # ax.scatter(X_obs, Y_obs, Z_obs, label='Obstacle', s=4, c='orange')
+        # ax.plot(vis_rest_vert[0, :, 0], vis_rest_vert[0, :, 1], vis_rest_vert[0, :, 2], label='pred')
+        # ax.set_xlim(-.5, 1.)
+        # ax.set_ylim(-1, .5)
+        # ax.set_zlim(0, 1.)
+        # plt.legend()
+        # plt.show()
         DEFORM_sim.rest_vert = nn.Parameter(rest_vert)
         DEFORM_sim.DEFORM_func.bend_stiffness = nn.Parameter(8e-4 * torch.ones((1, n_edge), device=device))
         DEFORM_sim.DEFORM_func.twist_stiffness = nn.Parameter(5e-5 * torch.ones((1, n_edge), device=device))
@@ -373,7 +392,9 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
                                     rest_edges = computeEdges(eval_vertices[:, traj_num])
                                     m_u0 = DEFORM_func.compute_u0(rest_edges[:, 0].float(), init_direction.repeat(eval_batch, 1, 1)[:, 0])
                                     current_v = (eval_vertices[:, traj_num] - eval_previous_vertices[:, traj_num]).div(DEFORM_sim.dt)
-                                    init_pred_vert_0, current_v, theta_full = DEFORM_sim(eval_vertices[:, traj_num], current_v, init_direction.repeat(eval_batch, 1, 1), clamped_index, m_u0, inputs[:, traj_num], clamped_selection, theta_full)
+                                    m_restEdgeL = DEFORM_sim.m_restEdgeL.repeat(eval_batch, 1)
+                                    DEFORM_sim.m_restWprev, DEFORM_sim.m_restWnext, DEFORM_sim.learned_pmass = DEFORM_sim.Rod_Init(eval_batch, init_direction.repeat(eval_batch, 1, 1), m_restEdgeL, clamped_index)
+                                    init_pred_vert_0, current_v, theta_full = DEFORM_sim(eval_vertices[:, traj_num], current_v, init_direction.repeat(eval_batch, 1, 1), clamped_index, m_u0, inputs[:, traj_num], clamped_selection, theta_full, mode = "evaluation")
                                     traj_loss = loss_func(init_pred_vert_0, eval_target_vertices[:, traj_num].float())
                                     eval_loss += traj_loss
 
@@ -395,7 +416,7 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
                                     previous_edge = computeEdges(eval_previous_vertices[:, traj_num])
                                     current_edges = computeEdges(init_pred_vert_0)
                                     m_u0 = DEFORM_func.parallelTransportFrame(previous_edge[:, 0], current_edges[:, 0], m_u0)
-                                    pred_vert, current_v, theta_full = DEFORM_sim(init_pred_vert_0, current_v, init_direction.repeat(eval_batch, 1, 1), clamped_index, m_u0, inputs[:, traj_num], clamped_selection, theta_full)
+                                    pred_vert, current_v, theta_full = DEFORM_sim(init_pred_vert_0, current_v, init_direction.repeat(eval_batch, 1, 1), clamped_index, m_u0, inputs[:, traj_num], clamped_selection, theta_full, mode = "evaluation")
                                     vert = init_pred_vert_0.clone()
                                     traj_loss = loss_func(pred_vert, eval_target_vertices[:, traj_num])
                                     eval_loss += traj_loss
@@ -421,7 +442,7 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
                                     previous_edge = computeEdges(previous_vert)
                                     current_edges = computeEdges(vert)
                                     m_u0 = DEFORM_func.parallelTransportFrame(previous_edge[:, 0], current_edges[:, 0],m_u0)
-                                    pred_vert, current_v, theta_full = DEFORM_sim(vert, current_v,init_direction.repeat(eval_batch, 1, 1),clamped_index, m_u0, inputs[:, traj_num], clamped_selection, theta_full)
+                                    pred_vert, current_v, theta_full = DEFORM_sim(vert, current_v,init_direction.repeat(eval_batch, 1, 1),clamped_index, m_u0, inputs[:, traj_num], clamped_selection, theta_full, mode = "evaluation")
                                     traj_loss = loss_func(pred_vert, eval_target_vertices[:, traj_num])
                                     eval_loss += traj_loss
 
@@ -440,6 +461,7 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
 
                             eval_time += 1
                 eval_losses.append(eval_loss.cpu().detach().numpy() / (eval_time_horizon * part_eval // eval_batch))
+                print(eval_losses)
                 eval_epochs.append(update_steps)
                 """save loss into local files. to do: tensor board"""
                 save_pickle(eval_losses, "loss_record/eval_loss_%s.pkl" % (DLO_type))
@@ -493,13 +515,7 @@ def train(DLO_type, train_set_number, eval_set_number, train_time_horizon, eval_
                             current_edges = computeEdges(pred_vertice)
                             m_u0 = DEFORM_func.parallelTransportFrame(previous_edge[:, 0], current_edges[:, 0],m_u0[:, traj_num])
                             target_v = (target_vertices[:, traj_num] - vertices[:, traj_num]).div(DEFORM_sim.dt)
-                            pred_vertice, current_v, theta_full        parser = argparse.ArgumentParser()
-    parser.add_argument("--DLO_type", type=str, default="DLO1")
-    parser.add_argument("--train_set_number", type=int, default=56)
-    parser.add_argument("--eval_set_number", type=int, default=14)
-    parser.add_argument("--train_time_horizon", type=int, default=100)
-    parser.add_argument("--eval_time_horizon", type=int, default=500)
-    args = parser.parse_args() = DEFORM_sim(pred_vertice.clone(), current_v.clone(), init_direction.repeat(batch, 1, 1), clamped_index, m_u0, inputs[:, traj_num],
+                            pred_vertice, current_v, theta_full = DEFORM_sim(pred_vertice.clone(), current_v.clone(), init_direction.repeat(batch, 1, 1), clamped_index, m_u0, inputs[:, traj_num],
                                 clamped_selection, theta_full)
                             traj_loss = loss_func(pred_vertice, target_vertices[:, traj_num])
                             v_loss = loss_func(current_v, target_v)

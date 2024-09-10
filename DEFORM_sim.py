@@ -302,22 +302,22 @@ class DEFORM_sim(nn.Module):
                         updated_vertices[i] = updated_vertices[i] + l * m_pmass[i + 1] / (m_pmass[i] + m_pmass[i + 1]) * updated_edges
                         updated_vertices[i + 1] = updated_vertices[i + 1] - l * m_pmass[i] / (m_pmass[i] + m_pmass[i + 1]) * updated_edges
             updated_vertices = torch.from_numpy(updated_vertices).unsqueeze(0).repeat(batch, 1, 1).to(self.device)
-            test_m_restEdgeL, test_m_restRegionL = computeLengths(computeEdges(updated_vertices.clone()))
+            # test_m_restEdgeL, test_m_restRegionL = computeLengths(computeEdges(updated_vertices.clone()))
             return updated_vertices
 
     def forward(self, current_vert, current_v, init_direction, clamped_index, m_u0, input, clamped_selection, theta_full, mode="train"):
-        learning_weight = 2.
+        learning_weight = 1.
         if mode == "train":
             previous_vert = current_vert.clone()
             current_x = current_vert.clone()
             batch = current_vert.size()[0]
             m_restEdgeL, m_restRegionL = self.m_restEdgeL.repeat(batch, 1), self.m_restRegionL.repeat(batch, 1)
-            m_restWprev, m_restWnext, m_pmass = self.Rod_Init(batch, init_direction, m_restEdgeL, clamped_index)
+            self.m_restWprev, self.m_restWnext, m_pmass = self.Rod_Init(batch, init_direction, m_restEdgeL, clamped_index)
             control_theta = torch.zeros(batch, 2, 1).to(self.device)
             current_edges = computeEdges(current_vert)
-            theta_full, material_m1, material_m2, m_kb = self.DEFORM_func.updateCurrentState(current_vert, m_u0, m_restEdgeL, m_restWprev, m_restWnext, m_restRegionL, control_theta, theta_full)
+            theta_full, material_m1, material_m2, m_kb = self.DEFORM_func.updateCurrentState(current_vert, m_u0, m_restEdgeL, self.m_restWprev, self.m_restWnext, m_restRegionL, control_theta, theta_full)
 
-            Internal_force = self.Internal_Force_Vectorize(current_edges, clamped_index, m_restEdgeL, m_restRegionL, m_kb, m_restWprev, m_restWnext, theta_full, material_m1, material_m2)
+            Internal_force = self.Internal_Force_Vectorize(current_edges, clamped_index, m_restEdgeL, m_restRegionL, m_kb, self.m_restWprev, self.m_restWnext, theta_full, material_m1, material_m2)
             Total_force = self.External_Force(m_pmass, current_v.clone(), Internal_force, clamped_index)
             """update"""
             current_vert, delta_vert = self.Integrate_Centerline(current_vert, current_v, Total_force, m_pmass)
@@ -335,12 +335,10 @@ class DEFORM_sim(nn.Module):
             #             edges.append([i + j, i])
 
             # edge_index = torch.transpose(torch.tensor(edges, dtype=torch.long), dim0=0, dim1=1).to(self.device)
-            # print(edge_index)
             graph_data = Data(x=current_x, edge_index=edge_index)
             graph_delta_data = Data(x=delta_vert, edge_index=edge_index)
             x, edge_index = graph_data.x, graph_data.edge_index
             delta_x, edge_index = graph_delta_data.x, graph_delta_data.edge_index
-            # print(delta_x.size())
             x = self.vert_conv1(x, edge_index)
             delta_x = self.delta_vert_conv1(delta_x, edge_index)
 
@@ -357,8 +355,6 @@ class DEFORM_sim(nn.Module):
             """residual"""
             current_vert[:, 2:-2] = current_vert[:, 2:-2] + x_dot * self.dt * learning_weight
             current_vert = self.applyInternalConstraintsIteration(current_vert, m_restEdgeL, m_pmass, clamped_index)
-            # current_vert[:, 2:-2] = current_vert[:, 2:-2] + x_dot * self.dt * learning_weight
-            # current_vert = self.non_linear_opt_edge(torch.cat((current_vert[:, 0].unsqueeze(dim=1), current_vert[:, -1].unsqueeze(dim=1)), dim=1), current_vert[:, 1:-1], m_restEdgeL).view(-1, self.n_vert, 3)
             current_v = (current_vert - previous_vert) / self.dt
             return current_vert, current_v, theta_full
 
@@ -368,6 +364,7 @@ class DEFORM_sim(nn.Module):
             current_edges = computeEdges(current_vert)
             batch = current_vert.size()[0]
             m_restEdgeL, m_restRegionL = self.m_restEdgeL.repeat(batch, 1), self.m_restRegionL.repeat(batch, 1)
+
             control_theta = torch.zeros(batch, 2, 1).to(self.device)
             theta_full, material_m1, material_m2, m_kb = self.DEFORM_func.updateCurrentState(current_vert, m_u0, m_restEdgeL, self.m_restWprev, self.m_restWnext, m_restRegionL, control_theta, theta_full)
             Internal_force = self.Internal_Force_Vectorize(current_edges, clamped_index, m_restEdgeL, m_restRegionL, m_kb, self.m_restWprev, self.m_restWnext, theta_full, material_m1, material_m2)
@@ -408,11 +405,8 @@ class DEFORM_sim(nn.Module):
             """"""
 
             """residual"""
-            # current_vert[:, 2:-2] = current_vert[:, 2:-2] + x_dot * self.dt * learning_weight
             current_vert[:, 2:-2] = current_vert[:, 2:-2] + x_dot * self.dt * learning_weight
             current_vert = self.applyInternalConstraintsIteration(current_vert, m_restEdgeL, self.learned_pmass, clamped_index)
-            # current_vert[:, 2:-2] = current_vert[:, 2:-2] + x_dot * self.dt * learning_weight
-            # current_vert = self.non_linear_opt_edge(torch.cat((current_vert[:, 0].unsqueeze(dim=1), current_vert[:, -1].unsqueeze(dim=1)), dim=1), current_vert[:, 1:-1], m_restEdgeL).view(-1, self.n_vert, 3).view(-1, self.n_vert, 3)
             current_v = (current_vert - previous_vert) / self.dt
             return current_vert, current_v, theta_full
 
@@ -465,7 +459,5 @@ class DEFORM_sim(nn.Module):
             """residual"""
             current_vert[:, 2:-2] = current_vert[:, 2:-2] + x_dot * self.dt * learning_weight
             current_vert = self.applyInternalConstraintsIteration(current_vert, m_restEdgeL, self.learned_pmass, clamped_index, mode="numpy")
-            # current_vert[:, 2:-2] = current_vert[:, 2:-2] + x_dot * self.dt * learning_weight
-            # current_vert = self.non_linear_opt_edge(torch.cat((current_vert[:, 0].unsqueeze(dim=1), current_vert[:, -1].unsqueeze(dim=1)), dim=1), current_vert[:, 1:-1], m_restEdgeL).view(-1, self.n_vert, 3)
             current_v = (current_vert - previous_vert) / self.dt
             return current_vert, current_v, theta_full
