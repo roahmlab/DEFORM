@@ -19,6 +19,7 @@ All authors are affiliated with the Robotics department and the department of Me
 
 ## Training DEFORM Models
 - Example: run `python train_DEFORM.py  --DLO_type="DLO1"` to train a DEFORM model with the DLO1 dataset.
+- Note that running mode = "evaluation_numpy" only works for batch = 1 for now.
 
 ## Citation
 If you use DEFORM in an academic work, please cite using the following BibTex entry:
