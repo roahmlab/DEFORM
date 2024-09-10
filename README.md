@@ -1,10 +1,6 @@
-<div align="center">
-
 # Differentiable Discrete Elastic Rods for Real-Time Modeling of Deformable Linear Objects
 
-</div>
-
-[Project Page](https://roahmlab.github.io/DEFORM/) | [Paper](https://arxiv.org/abs/2406.05931)
+This repository contains the source code for the paper [Differentiable Discrete Elastic Rods for Real-Time Modeling of Deformable Linear Objects](https://arxiv.org/abs/2406.05931). The paper has been accepted at CoRL 2024.
 
 ## Introduction
 This paper addresses the task of modeling Deformable Linear Objects (DLOs), such as ropes and cables, during dynamic motion over long time horizons.This task presents significant challenges due to the complex dynamics of DLOs.To address these challenges, this paper proposes differentiable Discrete Elastic Rods For deformable linear Objects with Real-time Modeling (DEFORM), 
