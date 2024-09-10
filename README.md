@@ -21,6 +21,10 @@ All authors are affiliated with the Robotics department and the department of Me
 - Example: run `python train_DEFORM.py  --DLO_type="DLO1"` to train a DEFORM model with the DLO1 dataset.
 - Note that running mode = "evaluation_numpy" only works for batch = 1 for now.
 
+## Dataset
+- For each DLO, we collect 350 seconds of dynamic trajectory data in the real-world using the motion capture system at a frequency of 100 Hz.
+
+
 ## Citation
 If you use DEFORM in an academic work, please cite using the following BibTex entry:
 ```
