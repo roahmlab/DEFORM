@@ -3,6 +3,7 @@
 # Differentiable Discrete Elastic Rods for Real-Time Modeling of Deformable Linear Objects
 
 </div>
+
 [Project Page](https://roahmlab.github.io/DEFORM/) | [Paper](https://arxiv.org/abs/2406.05931)
 
 ## Introduction
