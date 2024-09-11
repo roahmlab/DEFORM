@@ -22,7 +22,7 @@ All authors are affiliated with the Robotics department and the department of Me
 - Note that running mode = "evaluation_numpy" only works for batch = 1 for now.
 
 ## Dataset
-- For each DLO, we collect 350 seconds of dynamic trajectory data in the real-world using the motion capture system at a frequency of 100 Hz.
+- For each DLO, we collect 350 seconds of dynamic trajectory data in the real-world using the motion capture system at a frequency of 100 Hz. For dataset usage, please refer to train_DEFORM.py
 
 
 ## Citation
