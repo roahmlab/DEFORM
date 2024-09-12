@@ -93,6 +93,12 @@ c) 1 &rarr; 2: DER enforces inextensibility, but this does not satisfy classical
 
 ---
 
+# Dataset
+<div markdown="1" class="content-block grey justify no-pre">
+For each DLO, we collect 350 seconds of dynamic trajectory data in the real-world using the motion capture system at a frequency of 100 Hz. For dataset usage, please refer to train_DEFORM.py in https://github.com/roahmlab/DEFORM.
+
+---
+
 # Demo Video
 <div class="fullwidth">
 <video controls="" width="100%">
