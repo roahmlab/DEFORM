@@ -1,6 +1,6 @@
 # Differentiable Discrete Elastic Rods for Real-Time Modeling of Deformable Linear Objects
 
-This repository contains the source code for the paper [Differentiable Discrete Elastic Rods for Real-Time Modeling of Deformable Linear Objects](https://arxiv.org/abs/2406.05931). The paper has been accepted at CoRL 2024. [Project Page](https://roahmlab.github.io/DEFORM/)
+This repository contains the source code for the paper [Differentiable Discrete Elastic Rods for Real-Time Modeling of Deformable Linear Objects](https://arxiv.org/abs/2406.05931). The paper has been accepted at CoRL 2024. Project Page is [here](https://roahmlab.github.io/DEFORM/).
 
 <p align="center">
   <img height="300" src="/demo_image.png"/>
