@@ -172,7 +172,7 @@ class DEFORM_func(nn.Module):
             linear_solver_kwargs={'check_singular': False},
             vectorize=True,
             max_iterations=100,
-            step_size=0.05,
+            step_size=1.,
             abs_err_tolerance=1e-6,
             rel_err_tolerance=1e-10,
             adaptive_damping=True,
