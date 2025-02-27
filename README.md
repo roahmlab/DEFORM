@@ -34,7 +34,7 @@ All authors are affiliated with the Robotics department and the department of Me
 ## Citation
 If you use DEFORM in an academic work, please cite using the following BibTex entry:
 ```
-@article{DEFORM,
+@article{chen2024differentiablediscreteelasticrods,
       title={Differentiable Discrete Elastic Rods for Real-Time Modeling of Deformable Linear Objects}, 
       author={Yizhou Chen and Yiting Zhang and Zachary Brei and Tiancheng Zhang and Yuzhen Chen and Julie Wu and Ram Vasudevan},
       journal={https://arxiv.org/abs/2406.05931},
