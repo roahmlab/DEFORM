@@ -114,7 +114,7 @@ For each DLO, we collect 350 seconds of dynamic trajectory data in the real-worl
 This project was developed in [Robotics and Optimization for Analysis of Human Motion (ROAHM) Lab](http://www.roahmlab.com/) at University of Michigan - Ann Arbor.
 
 ```bibtex
-@article{DEFORM,
+@article{chen2024differentiablediscreteelasticrods,
       title={Differentiable Discrete Elastic Rods for Real-Time Modeling of Deformable Linear Objects}, 
       author={Yizhou Chen and Yiting Zhang and Zachary Brei and Tiancheng Zhang and Yuzhen Chen and Julie Wu and Ram Vasudevan},
       journal={https://arxiv.org/abs/2406.05931},
