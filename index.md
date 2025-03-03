@@ -15,7 +15,7 @@ autoanchor: false
 
 # Preview image for social media cards
 image:
-  path: https://raw.githubusercontent.com/yich7045/DEFT/main/web_elements/demo_image.png
+  path: https://raw.githubusercontent.com/yich7045/DEFORM/main/web_elements/demo_image.png
   height: 100
   width: 256
   alt: Random Landscape
@@ -70,7 +70,7 @@ A comprehensive series of experiments demonstrate the efficacy of DEFORM in term
 To further demonstrate the utility of DEFORM, this paper integrates it into a perception pipeline and illustrates its superior performance when compared to the state-of-the-art methods while tracking a DLO even in the presence of occlusions. 
 Finally, this paper illustrates the superior performance of DEFORM when compared to state-of-the-art methods when it is applied to perform autonomous planning and control of DLOs.
 <p align="center">
-  <img src="https://raw.githubusercontent.com/yich7045/DEFT/main/web_elements/demo_image.png" class="img-responsive" alt="DEFORM model" style="width: 100%; height: auto;">
+  <img src="https://raw.githubusercontent.com/yich7045/DEFORM/main/web_elements/demo_image.png" class="img-responsive" alt="DEFORM model" style="width: 100%; height: auto;">
 
 </p>
 The figure shows DEFORM's predicted states (yellow) and the actual states (red) for a DLO over 4.5 seconds at 100 Hz. Note that the prediction is performed recursively, without requiring access to ground truth or perception during the process.
