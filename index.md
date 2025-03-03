@@ -87,7 +87,7 @@ DEFORM reformulates Discrete Elastic Rods(DER) into Differentiable DER (DDER) wh
 b) To compensate for the error from DER's numerical integration, DEFORM introduces residual learning via DNNs.
 c) 1 &rarr; 2: DER enforces inextensibility, but this does not satisfy classical conservation principles.  1 &rarr; 3: DEFORM enforces inextensibility with momentum conservation, which allows dynamic modeling while maintaining simulation stability.
 <p align="center">
-  <img src="https://raw.githubusercontent.com/yich7045/DEFORM/main/web_elements/DEFORM_model.jpg" class="img-responsive" alt="DEFORM overview" style="width: 100%; height: auto;">
+  <img src="https://raw.githubusercontent.com/yich7045/DEFORM/main/web_elements/DEFORM_Overview.png" class="img-responsive" alt="DEFORM overview" style="width: 100%; height: auto;">
 </p>
 </div>
 
